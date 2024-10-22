@@ -71,7 +71,7 @@ runs:
         AZIOT_ID_SCOPE: ${{ inputs.aziot_id_scope }}
         AZIOT_CONNECTION_STRING: ${{ inputs.aziot_connection_string }}
     - name: Collect info
-      if: failure()
+      if: always()
       uses: ./eden/.github/actions/collect-info
     - name: Collect logs
       if: always()
