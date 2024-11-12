@@ -7,14 +7,16 @@ import (
 	"time"
 
 	"github.com/lf-edge/eden/pkg/controller/elog"
+	"github.com/lf-edge/eden/pkg/controller/types"
 	tk "github.com/lf-edge/eden/pkg/evetestkit"
 	"github.com/lf-edge/eden/pkg/utils"
-	"google.golang.org/protobuf/encoding/protojson"
+	pillartypes "github.com/lf-edge/eve/pkg/pillar/types"
 )
 
 var eveNode *tk.EveNode
 var logT *testing.T
 var logs chan *elog.FullLogEntry = make(chan *elog.FullLogEntry)
+var foundLogs map[string][]*elog.FullLogEntry = make(map[string][]*elog.FullLogEntry)
 
 const (
 	projectName = "newlogd"
@@ -65,86 +67,47 @@ func TestLogLevelsDifferent(t *testing.T) {
 	defer logInfof("TestLogLevelsDifferent finished")
 
 	logInfof("STEP 1: set log levels")
+	desiredLogLevel := "warning"
 	eveNode.UpdateNodeGlobalConfig(
 		nil,
 		map[string]string{
 			"debug.default.loglevel":        "debug",
-			"debug.default.remote.loglevel": "warning",
+			"debug.default.remote.loglevel": desiredLogLevel,
 		},
 	)
 
-	// check logs from now on - there should be no logs with level lower than warning
-	go failTestIfLogsBelowWarning()
-	go eveNode.GetLogsFromAdam(getLogsBelowWarning)
+	logInfof("STEP 2: wait for the log levels to be applied")
+	time.Sleep(30 * time.Second)
 
-	logInfof("STEP 2: do stuff to generate some logs")
-	appName := tk.GetRandomAppName(projectName + "-")
-	pubPorts := []string{sshPort + ":22"}
-	pc := tk.GetDefaultVMConfig(appName, tk.AppDefaultCloudConfig, pubPorts)
-	err := eveNode.EveDeployApp(appLink, false, pc)
-	if err != nil {
-		logFatalf("Failed to deploy app: %v", err)
+	logInfof("STEP 3: start capturing logs")
+	go func() {
+		if err := eveNode.GetLogsFromAdam(categorizeLogs, 0); err != nil {
+			logFatalf("Failed to get logs from adam: %v", err)
+		}
+	}()
+	logInfof("STEP 4: wait for the routine to gather some logs")
+	time.Sleep(60 * time.Second)
+
+	logInfof("STEP 5: check the logs")
+	fail := false
+	for severity, logs := range foundLogs {
+		logInfof("Logs with severity %s: %d", severity, len(logs))
+		if pillartypes.SyslogKernelLogLevelNum[severity] > pillartypes.SyslogKernelLogLevelNum[desiredLogLevel] {
+			fail = true
+			for _, log := range logs {
+				elog.LogPrint(log, types.OutputFormatLines)
+			}
+		}
 	}
 
-	// wait for the app to show up in the list
-	time.Sleep(10 * time.Second)
-	// wait 5 minutes for the app to start
-	logInfof("Waiting for app %s to start...", appName)
-	err = eveNode.AppWaitForRunningState(appName, appWait)
-	if err != nil {
-		logFatalf("Failed to wait for app to start: %v", err)
+	if fail {
+		logFatalf("Logs with unexpected severity found")
 	}
 
-	err = eveNode.AppStopAndRemove(appName)
-	if err != nil {
-		logInfof("Failed to stop and remove app: %v", err)
-	}
-
-	logInfof("STEP 3: check logs")
-	keptLogs, err := eveNode.EveRunCommand("zcat /persist/newlog/keepSentQueue/dev.log*")
-	if err != nil {
-		logFatalf("Failed to get keepSentQueue logs: %v", err)
-	}
-
-	fmt.Println(keptLogs)
-
-	// // let's see the output first
-	// out, err := eveNode.EveRunCommand("stat /persist/newlog/collect/dev.log*")
-	// if err != nil {
-	// 	logFatalf("Failed to get devUpload logs: %v", err)
-	// }
-	// logInfof("%s", string(out))
-
-	// if exists, err := eveNode.EveFileExists("/persist/newlog/collect/dev.log*"); err != nil || !exists {
-	// 	logFatalf("No logs found in /persist/newlog/collect/dev.log*")
-	// }
-
-	// // TODO: replace this with EVE's logs from the controller
-	// // there should be no logs with level lower than warning in devUpload
-	// if exists, err := eveNode.EveFileExists("/persist/newlog/devUpload/dev.log*"); err == nil && exists {
-	// 	devUploadLogs, err := eveNode.EveRunCommand("zcat /persist/newlog/devUpload/dev.log*")
-	// 	if err != nil {
-	// 		logFatalf("Failed to get devUpload logs: %v", err)
-	// 	}
-	// 	fmt.Println(devUploadLogs)
-	// }
+	// TODO: reset log levels
 }
 
-func failTestIfLogsBelowWarning() {
-	// if anything comes out of the logs channel, fail the test
-	something := <-logs
-
-	b, err := protojson.Marshal(something)
-	if err != nil {
-		logFatalf("Failed to marshal log entry: %v", err)
-	}
-	logFatalf("Got a log with severity below warning: %s", string(b))
-	logT.FailNow()
-}
-
-func getLogsBelowWarning(logEntry *elog.FullLogEntry) bool {
-	if logEntry.Severity != "warning" && logEntry.Severity != "error" {
-		logs <- logEntry
-	}
+func categorizeLogs(logEntry *elog.FullLogEntry) bool {
+	foundLogs[logEntry.GetSeverity()] = append(foundLogs[logEntry.GetSeverity()], logEntry)
 	return false // return false to continue checking
 }

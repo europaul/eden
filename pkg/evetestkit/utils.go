@@ -609,8 +609,8 @@ func (node *EveNode) discoverEveIP() error {
 	return nil
 }
 
-func (node *EveNode) GetLogsFromAdam(handler elog.HandlerFunc) error {
-	return node.controller.EdenFindLogs(handler)
+func (node *EveNode) GetLogsFromAdam(handler elog.HandlerFunc, timeout time.Duration) error {
+	return node.controller.EdenFindLogs(handler, timeout)
 }
 
 // GetDefaultVMConfig returns a default configuration for a VM
