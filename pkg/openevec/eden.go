@@ -614,6 +614,21 @@ func (openEVEC *OpenEVEC) EdenLog(outputFormat types.OutputFormat, follow bool, 
 	return nil
 }
 
+func (openEVEC *OpenEVEC) EdenFindLogs(handler elog.HandlerFunc) error {
+	changer := &adamChanger{}
+	ctrl, devFirst, err := changer.getControllerAndDevFromConfig(openEVEC.cfg)
+	if err != nil {
+		return fmt.Errorf("getControllerAndDevFromConfig: %w", err)
+	}
+	devUUID := devFirst.GetID()
+	q := make(map[string]string)
+
+	if err = ctrl.LogChecker(devUUID, q, handler, elog.LogNew, 0); err != nil {
+		return fmt.Errorf("LogChecker: %w", err)
+	}
+	return nil
+}
+
 func (openEVEC *OpenEVEC) EdenNetStat(outputFormat types.OutputFormat, follow bool, logTail uint, printFields, args []string) error {
 	changer := &adamChanger{}
 	ctrl, devFirst, err := changer.getControllerAndDevFromConfig(openEVEC.cfg)
