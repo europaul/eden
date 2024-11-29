@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/lf-edge/eden/pkg/controller/elog"
-	"github.com/lf-edge/eden/pkg/controller/types"
 	tk "github.com/lf-edge/eden/pkg/evetestkit"
 	"github.com/lf-edge/eden/pkg/utils"
 	pillartypes "github.com/lf-edge/eve/pkg/pillar/types"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 var eveNode *tk.EveNode
@@ -67,16 +67,20 @@ func TestLogLevelsDifferent(t *testing.T) {
 	defer logInfof("TestLogLevelsDifferent finished")
 
 	logInfof("STEP 1: set log levels")
-	desiredLogLevel := "warning"
+	desiredLogLevel := "none"
 	eveNode.UpdateNodeGlobalConfig(
 		nil,
 		map[string]string{
 			"debug.default.loglevel":        "debug",
+			"debug.syslog.loglevel":         "info",
+			"debug.kernel.loglevel":         "info",
 			"debug.default.remote.loglevel": desiredLogLevel,
+			"debug.local.loglevel":          "all",
 		},
 	)
 
 	logInfof("STEP 2: wait for the log levels to be applied")
+	// TODO: change this to use the metric of when the last config was applied / changed
 	time.Sleep(30 * time.Second)
 
 	logInfof("STEP 3: start capturing logs")
@@ -90,12 +94,23 @@ func TestLogLevelsDifferent(t *testing.T) {
 
 	logInfof("STEP 5: check the logs")
 	fail := false
+	f, err := os.OpenFile("unexpected_logs.jsonl", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		logFatalf("Failed to open file: %v", err)
+	}
+	defer f.Close()
 	for severity, logs := range foundLogs {
 		logInfof("Logs with severity %s: %d", severity, len(logs))
 		if pillartypes.SyslogKernelLogLevelNum[severity] > pillartypes.SyslogKernelLogLevelNum[desiredLogLevel] {
 			fail = true
 			for _, log := range logs {
-				elog.LogPrint(log, types.OutputFormatLines)
+				b, err := protojson.Marshal(log)
+				if err != nil {
+					logFatalf("Failed to marshal log: %v", err)
+				}
+				if _, err := f.WriteString(string(b) + "\n"); err != nil {
+					logFatalf("Failed to write to file: %v", err)
+				}
 			}
 		}
 	}
