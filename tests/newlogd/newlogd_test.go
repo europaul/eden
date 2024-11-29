@@ -49,7 +49,7 @@ func TestMain(m *testing.M) {
 	logInfof("newlogd Test started")
 	defer logInfof("newlogd Test finished")
 
-	node, err := tk.InitilizeTest(projectName, tk.WithControllerVerbosity("debug"))
+	node, err := tk.InitializeTest(projectName, tk.WithControllerVerbosity("debug"))
 	if err != nil {
 		logFatalf("Failed to initialize test: %v", err)
 	}
@@ -72,12 +72,18 @@ func TestLogLevelsDifferent(t *testing.T) {
 		nil,
 		map[string]string{
 			"debug.default.loglevel":        "debug",
-			"debug.syslog.loglevel":         "info",
-			"debug.kernel.loglevel":         "info",
 			"debug.default.remote.loglevel": desiredLogLevel,
-			"debug.local.loglevel":          "all",
+			"debug.syslog.loglevel":         "debug",
+			"debug.syslog.remote.loglevel":  desiredLogLevel,
+			"debug.kernel.loglevel":         "debug",
+			"debug.kernel.remote.loglevel":  desiredLogLevel,
 		},
 	)
+
+	desiredLogPrio, ok := pillartypes.SyslogKernelLogLevelNum[desiredLogLevel]
+	if !ok {
+		logFatalf("Invalid log level: %s", desiredLogLevel)
+	}
 
 	logInfof("STEP 2: wait for the log levels to be applied")
 	// TODO: change this to use the metric of when the last config was applied / changed
@@ -89,19 +95,25 @@ func TestLogLevelsDifferent(t *testing.T) {
 			logFatalf("Failed to get logs from adam: %v", err)
 		}
 	}()
-	logInfof("STEP 4: wait for the routine to gather some logs")
-	time.Sleep(60 * time.Second)
+	// logInfof("STEP 4: wait for the routine to gather some logs")
+	// time.Sleep(60 * time.Second)
+	logInfof("STEP 4: reboot EVE to generate logs from all components")
+	err := eveNode.EveRebootNode()
+	if err != nil {
+		logFatalf("Failed to reboot EVE: %v", err)
+	}
+	time.Sleep(180 * time.Second)
 
 	logInfof("STEP 5: check the logs")
 	fail := false
-	f, err := os.OpenFile("unexpected_logs.jsonl", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile("unexpected_logs.jsonl", os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		logFatalf("Failed to open file: %v", err)
 	}
 	defer f.Close()
 	for severity, logs := range foundLogs {
 		logInfof("Logs with severity %s: %d", severity, len(logs))
-		if pillartypes.SyslogKernelLogLevelNum[severity] > pillartypes.SyslogKernelLogLevelNum[desiredLogLevel] {
+		if logPrio, ok := pillartypes.SyslogKernelLogLevelNum[severity]; !ok || logPrio > desiredLogPrio {
 			fail = true
 			for _, log := range logs {
 				b, err := protojson.Marshal(log)

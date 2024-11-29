@@ -1389,6 +1389,9 @@ github.com/lf-edge/edge-containers v0.0.0-20240207093504-5dfda0619b80 h1:kiqB1Rk
 github.com/lf-edge/edge-containers v0.0.0-20240207093504-5dfda0619b80/go.mod h1:4yXdumKdTzF0URMtxOl8Xnzdxnoy1QR+2dzfOr4CIZY=
 github.com/lf-edge/eve-api/go v0.0.0-20240829123634-7c8ebda876ff h1:3uGTOvWQFQkIrlkFalmzUmXINnzmVOAn5Zx0ryBSzxQ=
 github.com/lf-edge/eve-api/go v0.0.0-20240829123634-7c8ebda876ff/go.mod h1:ot6MhAhBXapUDl/hXklaX4kY88T3uC4PTg0D2wD8DzA=
+github.com/lf-edge/eve-api/go v0.0.0-20241125213346-b026f21b3e75/go.mod h1:ot6MhAhBXapUDl/hXklaX4kY88T3uC4PTg0D2wD8DzA=
+github.com/lf-edge/eve-api/go v0.0.0-20241126174545-53f139cd5166 h1:TDCm5zpp6q3pZz0zO4us3cZFtzm1Tk8JIDqBOioFy1k=
+github.com/lf-edge/eve-api/go v0.0.0-20241126174545-53f139cd5166/go.mod h1:ot6MhAhBXapUDl/hXklaX4kY88T3uC4PTg0D2wD8DzA=
 github.com/lf-edge/eve/libs/depgraph v0.0.0-20220711144346-0659e3b03496 h1:txHCOKhVsKIZKvKWzyIMe3J+ATKk61o4bADhsdLk42Y=
 github.com/lf-edge/eve/libs/depgraph v0.0.0-20220711144346-0659e3b03496/go.mod h1:8gtCaEwMJftnaP8PjjgRStLhOoHquzzlmYzj441QwpU=
 github.com/lf-edge/eve/libs/reconciler v0.0.0-20220711144346-0659e3b03496/go.mod h1:BWuSpe83TvdUmwqhSPa8/gGfapb91OkJ1jNHEnSypr4=
@@ -1396,6 +1399,8 @@ github.com/lf-edge/eve/pkg/kube/cnirpc v0.0.0-20240315102754-0f6d1f182e0d h1:tUB
 github.com/lf-edge/eve/pkg/kube/cnirpc v0.0.0-20240315102754-0f6d1f182e0d/go.mod h1:Nn3juMJJ1G8dyHOebdZyS4jOB/fuxAd5fIajBaWjHr8=
 github.com/lf-edge/eve/pkg/pillar v0.0.0-20240923082146-6d403aaa5513 h1:6eoKsOh15KAIGzZbLNlMhsOoPiMgoD6+VeuKsYsbqHY=
 github.com/lf-edge/eve/pkg/pillar v0.0.0-20240923082146-6d403aaa5513/go.mod h1:5zB+wlsiTBE2N/Jb0Zr7DaUJMG2OCcAP6X+dyftIdzo=
+github.com/lf-edge/eve/pkg/pillar v0.0.0-20241126215939-16062e81d553 h1:89ZRk9plljAhGOkXj1Rgjg0Y0qbllax1QWAQMqUk1q8=
+github.com/lf-edge/eve/pkg/pillar v0.0.0-20241126215939-16062e81d553/go.mod h1:1NZojBfxi51+dZrJzeUkTIBUEMlncjNbjnWabPXmIS4=
 github.com/linuxkit/virtsock v0.0.0-20201010232012-f8cee7dfc7a3/go.mod h1:3r6x7q95whyfWQpmGZTu3gk3v2YkMi05HEzl7Tf7YEo=
 github.com/lunixbochs/struc v0.0.0-20200707160740-784aaebc1d40 h1:EnfXoSqDfSNJv0VBNqY/88RNnhSGYkrHaO0mmFGbVsc=
 github.com/lunixbochs/struc v0.0.0-20200707160740-784aaebc1d40/go.mod h1:vy1vK6wD6j7xX6O6hXe621WabdtNkou2h7uRtTfRMyg=
