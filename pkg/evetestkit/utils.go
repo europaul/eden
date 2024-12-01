@@ -148,6 +148,15 @@ func (node *EveNode) UpdateNodeGlobalConfig(deviceItems, configItems map[string]
 	return node.controller.EdgeNodeUpdate(controllerMode, deviceItems, configItems)
 }
 
+func (node *EveNode) GetConfig(configFile string) error {
+	controllerMode := ""
+	return node.controller.EdgeNodeGetConfig(controllerMode, configFile)
+}
+
+func (node *EveNode) SetConfig(configFile string) error {
+	return node.controller.EdgeNodeSetConfig(configFile)
+}
+
 func (node *EveNode) getAppConfig(appName string) *appInstanceConfig {
 	for i := range node.apps {
 		if node.apps[i].name == appName {

@@ -15,7 +15,6 @@ import (
 
 var eveNode *tk.EveNode
 var logT *testing.T
-var logs chan *elog.FullLogEntry = make(chan *elog.FullLogEntry)
 var foundLogs map[string][]*elog.FullLogEntry = make(map[string][]*elog.FullLogEntry)
 
 const (
@@ -39,7 +38,7 @@ func logFatalf(format string, args ...interface{}) {
 func logInfof(format string, args ...interface{}) {
 	out := utils.AddTimestampf(format+"\n", args...)
 	if logT != nil {
-		logT.Logf(out)
+		logT.Log(out)
 	} else {
 		fmt.Print(out)
 	}
@@ -66,6 +65,11 @@ func TestLogLevelsDifferent(t *testing.T) {
 	logInfof("TestLogLevelsDifferent started")
 	defer logInfof("TestLogLevelsDifferent finished")
 
+	logInfof("secure the initial config")
+	if err := eveNode.GetConfig("/tmp/initial_config"); err != nil {
+		logFatalf("Failed to get initial config: %v", err)
+	}
+
 	logInfof("STEP 1: set log levels")
 	desiredLogLevel := "none"
 	eveNode.UpdateNodeGlobalConfig(
@@ -85,9 +89,11 @@ func TestLogLevelsDifferent(t *testing.T) {
 		logFatalf("Invalid log level: %s", desiredLogLevel)
 	}
 
-	logInfof("STEP 2: wait for the log levels to be applied")
+	logInfof("STEP 2: wait for the log levels to be applied and the old logs to be sent")
 	// TODO: change this to use the metric of when the last config was applied / changed
-	time.Sleep(30 * time.Second)
+	// the waiting period includes the time for EVE to get & parse the config
+	// as well as the time for the logs that were written to disk before the config was applied to be sent
+	time.Sleep(180 * time.Second)
 
 	logInfof("STEP 3: start capturing logs")
 	go func() {
@@ -105,8 +111,8 @@ func TestLogLevelsDifferent(t *testing.T) {
 	time.Sleep(180 * time.Second)
 
 	logInfof("STEP 5: check the logs")
-	fail := false
-	f, err := os.OpenFile("unexpected_logs.jsonl", os.O_CREATE|os.O_WRONLY, 0644)
+	foundUndesiredLogs := false
+	f, err := os.OpenFile("unexpected_logs.jsonl", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		logFatalf("Failed to open file: %v", err)
 	}
@@ -114,7 +120,7 @@ func TestLogLevelsDifferent(t *testing.T) {
 	for severity, logs := range foundLogs {
 		logInfof("Logs with severity %s: %d", severity, len(logs))
 		if logPrio, ok := pillartypes.SyslogKernelLogLevelNum[severity]; !ok || logPrio > desiredLogPrio {
-			fail = true
+			foundUndesiredLogs = true
 			for _, log := range logs {
 				b, err := protojson.Marshal(log)
 				if err != nil {
@@ -127,11 +133,14 @@ func TestLogLevelsDifferent(t *testing.T) {
 		}
 	}
 
-	if fail {
-		logFatalf("Logs with unexpected severity found")
+	logInfof("set the initial config")
+	if err := eveNode.SetConfig("/tmp/initial_config"); err != nil {
+		logFatalf("Failed to get back to the initial config: %v", err)
 	}
 
-	// TODO: reset log levels
+	if foundUndesiredLogs {
+		logFatalf("Logs with undesired severity found")
+	}
 }
 
 func categorizeLogs(logEntry *elog.FullLogEntry) bool {
