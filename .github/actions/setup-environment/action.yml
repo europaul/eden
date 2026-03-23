@@ -61,6 +61,9 @@ runs:
             exit 1
           fi
           ./eden config set default --key=eve.accel --value=true
+        elif lscpu | grep -oEq "vmx|svm" && [[ -e /dev/kvm ]]; then
+          echo "KVM available, enabling hardware acceleration"
+          ./eden config set default --key=eve.accel --value=true
         else
           ./eden config set default --key=eve.accel --value=false
           ./eden config set default --key=eve.firmware --value="$(pwd)/firmware/OVMF_CODE.fd $(pwd)/firmware/OVMF_VARS.fd"
