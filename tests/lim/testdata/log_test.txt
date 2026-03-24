@@ -31,4 +31,9 @@ test:
 
 -- ssh.sh --
 EDEN={{EdenConfig "eden.root"}}/{{EdenConfig "eden.bin-dist"}}/{{EdenConfig "eden.eden-bin"}}
-until timeout 10 $EDEN eve ssh exit; do sleep 10; done
+# Keep generating SSH connections in a loop so the log watcher
+# catches a "Disconnected" message regardless of startup timing.
+while true; do
+    timeout 10 $EDEN eve ssh exit || true
+    sleep 10
+done
