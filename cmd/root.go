@@ -46,7 +46,6 @@ func NewEdenCommand() *cobra.Command {
 				newNetStatCmd(&configName, &verbosity),
 				newMetricCmd(&configName, &verbosity),
 				newAdamCmd(&configName, &verbosity),
-				newRegistryCmd(&configName, &verbosity),
 				newRedisCmd(&configName, &verbosity),
 				newEserverCmd(&configName, &verbosity),
 				newTestCmd(&configName, &verbosity),
