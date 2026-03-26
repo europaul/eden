@@ -62,6 +62,7 @@ type ConfigVars struct {
 	EServerIP         string
 	RegistryIP        string
 	RegistryPort      string
+	RegistryMirror    string
 	LogLevel          string
 	RemoteLogLevel    string
 }
@@ -130,6 +131,7 @@ func InitVars() (*ConfigVars, error) {
 			EServerIP:         viper.GetString("eden.eserver.ip"),
 			RegistryIP:        viper.GetString("registry.ip"),
 			RegistryPort:      viper.GetString("registry.port"),
+			RegistryMirror:    viper.GetString("registry.mirror"),
 			LogLevel:          viper.GetString("eve.log-level"),
 			RemoteLogLevel:    viper.GetString("eve.remote-log-level"),
 		}
