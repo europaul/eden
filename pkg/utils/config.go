@@ -509,6 +509,8 @@ func generateConfigFileFromTemplate(filePath string, templateString string, cont
 			return ip
 		case "registry.dist":
 			return defaults.DefaultRegistryDist
+		case "registry.mirror":
+			return ""
 
 		case "sdn.disable":
 			return true
