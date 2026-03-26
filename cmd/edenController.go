@@ -29,7 +29,7 @@ func newControllerCmd(configName, verbosity *string) *cobra.Command {
 			Commands: []*cobra.Command{
 				newEdgeNodeReboot(controllerMode),
 				newEdgeNodeShutdown(controllerMode),
-				newEdgeNodeEVEImageUpdate(cfg, controllerMode),
+				newEdgeNodeEVEImageUpdate(controllerMode),
 				newEdgeNodeEVEImageRemove(controllerMode),
 				newEdgeNodeEVEImageUpdateRetry(controllerMode),
 				newEdgeNodeUpdate(controllerMode),
@@ -96,7 +96,7 @@ func newEdgeNodeShutdown(controllerMode string) *cobra.Command {
 	return edgeNodeShutdown
 }
 
-func newEdgeNodeEVEImageUpdate(cfg *openevec.EdenSetupArgs, controllerMode string) *cobra.Command {
+func newEdgeNodeEVEImageUpdate(controllerMode string) *cobra.Command {
 	var baseOSVersion, registry string
 	var baseOSImageActivate, baseOSVDrive bool
 
@@ -106,9 +106,6 @@ func newEdgeNodeEVEImageUpdate(cfg *openevec.EdenSetupArgs, controllerMode strin
 		Long:  `Update EVE image.`,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			if !cmd.Flags().Changed("registry") && cfg.Registry.IP != "" {
-				registry = "local"
-			}
 			baseOSImage := args[0]
 			if err := openEVEC.EdgeNodeEVEImageUpdate(baseOSImage, baseOSVersion, registry, controllerMode, baseOSImageActivate, baseOSVDrive); err != nil {
 				log.Fatal(err)

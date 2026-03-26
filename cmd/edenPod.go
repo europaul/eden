@@ -83,9 +83,6 @@ func newPodDeployCmd(cfg *openevec.EdenSetupArgs) *cobra.Command {
 		Long:  `Deploy app in pod.`,
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			if !cmd.Flags().Changed("registry") && cfg.Registry.IP != "" {
-				pc.Registry = "local"
-			}
 			appLink := args[0]
 			if err := openEVEC.PodDeploy(appLink, pc, cfg); err != nil {
 				log.Fatal(err)

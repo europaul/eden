@@ -81,11 +81,8 @@ func (openEVEC *OpenEVEC) StartEden(vmName, zedControlURL, tapInterface string) 
 			return fmt.Errorf("cannot start adam %w", err)
 		}
 
-		// Only start the built-in registry container if no external registry is configured
-		if cfg.Registry.IP == "" {
-			if err := openEVEC.StartRegistry(); err != nil {
-				return fmt.Errorf("cannot start registry %w", err)
-			}
+		if err := openEVEC.StartRegistry(); err != nil {
+			return fmt.Errorf("cannot start registry %w", err)
 		}
 
 		if err := openEVEC.StartEServer(); err != nil {
