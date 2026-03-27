@@ -57,8 +57,8 @@ jobs:
             echo "runner=['buildjet-4vcpu-ubuntu-2204', 'buildjet-pinned-7950x']" >> "$GITHUB_OUTPUT"
             echo "runner_virt=['buildjet-4vcpu-ubuntu-2204', 'buildjet-pinned-7950x']" >> "$GITHUB_OUTPUT"
           else
-            echo "runner=['cake-is-a-lie']" >> "$GITHUB_OUTPUT"
-            echo "runner_virt=['cake-is-a-lie']" >> "$GITHUB_OUTPUT"
+            echo "runner=['kratos']" >> "$GITHUB_OUTPUT"
+            echo "runner_virt=['kratos']" >> "$GITHUB_OUTPUT"
           fi
 
   smoke:
