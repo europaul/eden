@@ -78,12 +78,6 @@ jobs:
             exit 1
           fi
           echo "conclusion=$prev_conclusion" >> "$GITHUB_OUTPUT"
-      - name: Dockerhub Login
-        if: ${{ github.event.repository.full_name == 'lf-edge/eve' && steps.prev_attempt.outputs.conclusion != 'success' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_PULL_USER }}
-          password: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
       - name: Get code
         if: steps.prev_attempt.outputs.conclusion != 'success'
         uses: actions/checkout@v4.1.1
@@ -107,8 +101,6 @@ jobs:
           eve_log_level: ${{ inputs.eve_log_level }}
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
           artifact_run_id: ${{ inputs.artifact_run_id }}
-          docker_account: ${{ secrets.DOCKERHUB_PULL_USER }}
-          docker_token: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
           aziot_id_scope: ${{ secrets.AZIOT_ID_SCOPE }}
           aziot_connection_string: ${{ secrets.AZIOT_CONNECTION_STRING }}
 
@@ -141,12 +133,6 @@ jobs:
                 exit 1
             fi
             echo "conclusion=$prev_conclusion" >> "$GITHUB_OUTPUT"
-      - name: Dockerhub Login
-        if: ${{ github.event.repository.full_name == 'lf-edge/eve' && steps.prev_attempt.outputs.conclusion != 'success' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_PULL_USER }}
-          password: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
       - name: Get code
         if: steps.prev_attempt.outputs.conclusion != 'success'
         uses: actions/checkout@v4.1.1
@@ -170,8 +156,6 @@ jobs:
           eve_log_level: ${{ inputs.eve_log_level }}
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
           artifact_run_id: ${{ inputs.artifact_run_id }}
-          docker_account: ${{ secrets.DOCKERHUB_PULL_USER }}
-          docker_token: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
 
   storage:
     name: Storage
@@ -206,12 +190,6 @@ jobs:
                 exit 1
             fi
             echo "conclusion=$prev_conclusion" >> "$GITHUB_OUTPUT"
-      - name: Dockerhub Login
-        if: ${{ github.event.repository.full_name == 'lf-edge/eve' && steps.prev_attempt.outputs.conclusion != 'success' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_PULL_USER }}
-          password: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
       - name: Get code
         if: steps.prev_attempt.outputs.conclusion != 'success'
         uses: actions/checkout@v4.1.1
@@ -235,8 +213,6 @@ jobs:
           eve_log_level: ${{ inputs.eve_log_level }}
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
           artifact_run_id: ${{ inputs.artifact_run_id }}
-          docker_account: ${{ secrets.DOCKERHUB_PULL_USER }}
-          docker_token: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
 
   lps-loc:
     name: LPS/LOC
@@ -267,12 +243,6 @@ jobs:
                 exit 1
             fi
             echo "conclusion=$prev_conclusion" >> "$GITHUB_OUTPUT"
-      - name: Dockerhub Login
-        if: ${{ github.event.repository.full_name == 'lf-edge/eve' && steps.prev_attempt.outputs.conclusion != 'success' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_PULL_USER }}
-          password: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
       - name: Get code
         if: steps.prev_attempt.outputs.conclusion != 'success'
         uses: actions/checkout@v4.1.1
@@ -296,8 +266,6 @@ jobs:
           eve_log_level: ${{ inputs.eve_log_level }}
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
           artifact_run_id: ${{ inputs.artifact_run_id }}
-          docker_account: ${{ secrets.DOCKERHUB_PULL_USER }}
-          docker_token: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
 
   eve-upgrade:
     name: EVE Upgrade
@@ -332,12 +300,6 @@ jobs:
                 exit 1
             fi
             echo "conclusion=$prev_conclusion" >> "$GITHUB_OUTPUT"
-      - name: Dockerhub Login
-        if: ${{ github.event.repository.full_name == 'lf-edge/eve' && steps.prev_attempt.outputs.conclusion != 'success' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_PULL_USER }}
-          password: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
       - name: Get code
         if: steps.prev_attempt.outputs.conclusion != 'success'
         uses: actions/checkout@v4.1.1
@@ -361,8 +323,6 @@ jobs:
           eve_log_level: ${{ inputs.eve_log_level }}
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
           artifact_run_id: ${{ inputs.artifact_run_id }}
-          docker_account: ${{ secrets.DOCKERHUB_PULL_USER }}
-          docker_token: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
 
   user-apps:
     name: User Apps
@@ -393,12 +353,6 @@ jobs:
                 exit 1
             fi
             echo "conclusion=$prev_conclusion" >> "$GITHUB_OUTPUT"
-      - name: Dockerhub Login
-        if: ${{ github.event.repository.full_name == 'lf-edge/eve' && steps.prev_attempt.outputs.conclusion != 'success' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_PULL_USER }}
-          password: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
       - name: Get code
         if: steps.prev_attempt.outputs.conclusion != 'success'
         uses: actions/checkout@v4.1.1
@@ -422,8 +376,6 @@ jobs:
           eve_log_level: ${{ inputs.eve_log_level }}
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
           artifact_run_id: ${{ inputs.artifact_run_id }}
-          docker_account: ${{ secrets.DOCKERHUB_PULL_USER }}
-          docker_token: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
 
   virtualization:
     name: Virtualization
@@ -454,12 +406,6 @@ jobs:
                 exit 1
             fi
             echo "conclusion=$prev_conclusion" >> "$GITHUB_OUTPUT"
-      - name: Dockerhub Login
-        if: ${{ github.event.repository.full_name == 'lf-edge/eve' && steps.prev_attempt.outputs.conclusion != 'success' }}
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_PULL_USER }}
-          password: ${{ secrets.DOCKERHUB_PULL_TOKEN }}
       - name: Get code
         if: steps.prev_attempt.outputs.conclusion != 'success'
         uses: actions/checkout@v4.1.1
@@ -484,5 +430,3 @@ jobs:
           eve_artifact_name: ${{ inputs.eve_artifact_name }}
           artifact_run_id: ${{ inputs.artifact_run_id }}
           require_virtualization: true
-          docker_account: ${{ secrets.RELEASE_DOCKERHUB_ACCOUNT }}
-          docker_token: ${{ secrets.RELEASE_DOCKERHUB_TOKEN }}
