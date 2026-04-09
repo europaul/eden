@@ -53,7 +53,7 @@ jobs:
       matrix:
         file_system: ['ext4', 'zfs']
         tpm: [true, false]
-    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["ubuntu-22.04"]') }}
+    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["cake-is-a-lie"]') }}
     steps:
       - name: Check job status from previous attempt
         id: prev_attempt
@@ -103,7 +103,7 @@ jobs:
     name: Networking
     env:
       JOB_NAME: Networking
-    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["ubuntu-22.04"]') }}
+    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["cake-is-a-lie"]') }}
     steps:
       - name: Check job status from previous attempt
         id: prev_attempt
@@ -155,7 +155,7 @@ jobs:
       fail-fast: false
       matrix:
         file_system: ['ext4', 'zfs']
-    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["ubuntu-22.04"]') }}
+    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["cake-is-a-lie"]') }}
     steps:
       - name: Check job status from previous attempt
         id: prev_attempt
@@ -203,7 +203,7 @@ jobs:
     name: LPS/LOC
     env:
       JOB_NAME: LPS/LOC
-    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["ubuntu-22.04"]') }}
+    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["cake-is-a-lie"]') }}
     steps:
       - name: Check job status from previous attempt
         id: prev_attempt
@@ -255,7 +255,7 @@ jobs:
       fail-fast: false
       matrix:
         file_system: ['ext4', 'zfs']
-    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["ubuntu-22.04"]') }}
+    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["cake-is-a-lie"]') }}
     steps:
       - name: Check job status from previous attempt
         id: prev_attempt
@@ -303,7 +303,7 @@ jobs:
     name: User Apps
     env:
       JOB_NAME: User Apps
-    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["ubuntu-22.04"]') }}
+    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["cake-is-a-lie"]') }}
     steps:
       - name: Check job status from previous attempt
         id: prev_attempt
@@ -351,7 +351,7 @@ jobs:
     name: Virtualization
     env:
       JOB_NAME: Virtualization
-    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["ubuntu-22.04"]') }}
+    runs-on: ${{ fromJSON(github.repository_owner == 'lf-edge' && '["nested-virt"]' || '["cake-is-a-lie"]') }}
     steps:
       - name: Check job status from previous attempt
         id: prev_attempt
